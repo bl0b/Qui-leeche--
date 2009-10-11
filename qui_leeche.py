@@ -87,6 +87,9 @@ if __name__=='__main__' :
 		usage()
 		sys.exit(0)
 	sleep(refresh)
+	ppf = {}
+	for f in filters :
+		ppf[f] = '\x1b[1m%s\x1b[m'%f
 	while True :
 		t1 = time()
 		new_packet_counts, interval = tcpdump.get_counts()
@@ -107,7 +110,7 @@ if __name__=='__main__' :
 			filt_peers[progname] = dict(zip(filt_peers[progname], xrange(len(filt_peers[progname]))))
 		#print "filters", float(c)
 		#print filt_peers
-		packet_counts = dict([(f, 0.) for f in filters])
+		packet_counts = dict([(ppf[f], 0.) for f in filters])
 		#print new_packet_counts
 		scale = 1./(interval*1024.)
 		for who, port in new_packet_counts.keys() :
@@ -121,7 +124,7 @@ if __name__=='__main__' :
 			for f in filters :
 				if key in filt_peers[f] :
 					#print f, who, port
-					packet_counts[f] += new_packet_counts[key]
+					packet_counts[ppf[f]] += new_packet_counts[key]
 					strip = True
 					break
 			if not strip :
@@ -137,11 +140,11 @@ if __name__=='__main__' :
 		who_sorted = sorted(packet_counts.keys(), key=lambda a : -packet_counts[a])
 		total = reduce(float.__add__, packet_counts.values())
 		percent = 100./total
-		whoswho = '\n'.join(['%-60s %8.2f kB/s    %3.1f%%'%(k, packet_counts[k], packet_counts[k]*percent) for k in who_sorted if packet_counts[k]!=0.])
-		print '\x1B[2J\x1B[0;0H'
+		whoswho = '\n'.join(['%-63s\t%8.2f kB/s    %5.1f%%'%(k, packet_counts[k], packet_counts[k]*percent) for k in who_sorted if packet_counts[k]!=0.])
+		print '\x1B[2J\x1B[0;0H'+str(datetime.now())
 		print
-		print "Qui leeche ?", datetime.now(), "(computed in %5.3f seconds)"%(time()-t1)
-		print "Total", total, "kB/s"
+		print "Qui leeche ? (computed in %5.3f seconds)"%(time()-t1)
+		print "Total %7.1f kB/s"%total
 		print
 		print "%s\r"%whoswho
 		#sys.exit(0)
