@@ -49,7 +49,10 @@ def get_sockets() :
 	return dict( [ (k[9], k) for k in map(str.split, open('/proc/net/tcp').readlines()[1:]) ] )
 
 def get_process_remote_peers(p, socks) :
-	psocks = get_process_sockets(p)
+	try :
+		psocks = get_process_sockets(p)
+	except :
+		return []
 	ret = []
 	def unpack_ip(ipstr) :
 		return socket.inet_ntoa('%c%c%c%c'%tuple([int(ipstr[2*i:2*i+2], 16) for i in xrange(3,-1,-1)]))

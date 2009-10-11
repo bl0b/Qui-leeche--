@@ -1,0 +1,11 @@
+To run, create a file ~/quileecherc.
+Each line in this file can define value for one of those keys :
+- hostname : the local hostname (as of the interface you'll listen on)
+- ssh_no_users : a comma-separated list (without spaces) of directories in /home that MUSTN'T appear in the sshd filter
+- default_filters : a comma-separated list (without spaces) of program names to filter
+Syntax to assign values to a key is :
+key = value
+Spaces around key and values are optional.
+No comment, no empty line in the rc file.
+To install, just drop the scripts in a safe place (e.g. /usr/local) and symlink qui_leeche.py anywhere in the $PATH.
+
